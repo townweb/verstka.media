@@ -28,7 +28,8 @@ if(function_exists('bcn_display'))
 			<?php if(is_user_logged_in()){
 			?>
 			<div class="post-info">
-				<div class="post-info_author"><?php the_author_posts_link(); ?></div>
+				<div class="post-info_author"><?php
+                   echo (get_field('author_name') ? get_field('author_name') : the_author_posts_link()); ?></div>
 				<div class="post-info_date">  <time datetime="<?php echo get_the_date('c');?>">
                         <a href="<?php echo get_permalink(); ?>"><?php echo get_the_date('d F, Y');?></a>
                     </time></div>
