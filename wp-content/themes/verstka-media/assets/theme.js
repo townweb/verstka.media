@@ -5,11 +5,15 @@ jQuery(function($) {
         let page = parseInt($button.attr('data-page') )+ 1;
         let term_id = parseInt($button.attr('data-term-id') );
 
+
         let data = {
             action:'getPostsPerPage',
             page: page,
             term_id: term_id
         };
+        if(parseInt($button.attr('data-author-id') ) > 0){
+            data['author']=parseInt($button.attr('data-author-id'));
+        }
 
         // 'ajaxurl' не определена во фронте, поэтому мы добавили её аналог с помощью wp_localize_script()
         jQuery.post( themeAjax.url, data, function(response) {

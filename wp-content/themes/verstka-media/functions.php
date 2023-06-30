@@ -573,14 +573,19 @@ function func_shrt_relinks()
 add_shortcode('relinks', "func_shrt_relinks");
 
 function func_archive_news(){
-    
+
 
     $args = array(
-
         'posts_per_page' => 15,
         'post_status'=>'publish',
         'cat' => get_queried_object_id()
     );
+
+    if(is_author()){
+        unset($args['cat']);
+        $args['author'] = get_queried_object_id();
+    }
+
     global $query_string;
     //$posts = query_posts($query_string);
 
@@ -591,7 +596,7 @@ class="'.((get_queried_object_id() == '12')?'':'wp-container-custom').' wp-block
     foreach ($posts as $post){
         wp_reset_postdata();
         setup_postdata($post);
-        if(get_queried_object_id() == '12') {
+        if(get_queried_object_id() == '12' || is_author()) {
             $post_html .= load_template_part('template-parts/content-post', null, array('format' => 'code', 'post' => $post));
         }else{
             $post_html .= load_template_part('template-parts/content-post-s', null, array('format' => 'code', 'post' => $post));
@@ -611,13 +616,17 @@ function func_shrt_more_button()
 {
     $term_id = 0;
 
-    if(get_queried_object()){
-        $term_id = get_queried_object()->term_id;
+    if(get_queried_object_id()){
+        $term_id = get_queried_object_id();
     }
-
     if(is_front_page()){
         return '<div class="more_button_main" data-term-id="'.$term_id.'" data-page="1">Ещё 15 историй</div>';
     }
+
+    if(is_author()){
+        return '<div class="more_button" data-author-id="'.$term_id.'" data-term-id="'.$term_id.'" data-page="1">Ещё 15 историй</div>';
+    }
+
     return '<div class="more_button" data-term-id="'.$term_id.'" data-page="1">Ещё 15 историй</div>';
 }
 
@@ -628,7 +637,10 @@ function get_postsPerPage()
     global $post;
     $page = intval($_POST['page']);
     $args = 'page=' . $page . '&paged=' . $page . '&posts_per_page=15';
-    if($_POST['term_id']){
+    if(isset($_POST['author'])){
+        $args .='&author='.$_POST['author'];
+    }
+    elseif($_POST['term_id']){
         $args .='&cat='.$_POST['term_id'];
     }
     $query = new WP_Query($args);
@@ -641,7 +653,8 @@ function get_postsPerPage()
         while ($query->have_posts()) {
             setup_postdata($query->the_post());
             // This is where the post's data is set up
-            if($_POST['term_id'] == '12'){
+
+            if($_POST['term_id'] == '12' || isset($_POST['author'])){
                 get_template_part('template-parts/content-post','');
             }else{
                 get_template_part('template-parts/content-post-s','');

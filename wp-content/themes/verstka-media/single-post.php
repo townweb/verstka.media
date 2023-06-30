@@ -31,7 +31,7 @@ if(function_exists('bcn_display'))
 				<div class="post-info_author"><?php
                    echo (get_field('author_name') ? get_field('author_name') : the_author_posts_link()); ?></div>
 				<div class="post-info_date">  <time datetime="<?php echo get_the_date('c');?>">
-                        <a href="<?php echo get_permalink(); ?>"><?php echo get_the_date('d F, Y');?></a>
+                      <?php echo get_the_date('d F, Y');?>
                     </time></div>
 				<div class="post-info_spacer">|</div>
 				<?php 
