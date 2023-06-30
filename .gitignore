@@ -10,6 +10,7 @@
 *.crashed
 /.pki/
 /.wp-cli/
+/.idea
 /mwp_db/
 /wp-admin/
 /wp-includes/
